@@ -7,11 +7,11 @@ use web_sys::*;
 
 
 pub struct VertexShader {
-    source: String,
+    source: &'static str,
 }
 
 impl VertexShader {
-    pub fn init(source: String) -> VertexShader {
+    pub fn init(source: &'static str) -> VertexShader {
         return VertexShader {
             source
         };
@@ -20,19 +20,19 @@ impl VertexShader {
     pub fn compile(&self,
                    ctx: &WebGlRenderingContext
     ) -> Result<WebGlShader, String> {
-        let shader = ctx.
-                        create_shader(WebGlRenderingContext::VERTEX_SHADER).
+        let shader = ctx
+                        .create_shader(WebGlRenderingContext::VERTEX_SHADER)
                         .ok_or_else(|| String::from("Unable to create vertex shader object"))?;
-        context.shader_source(&shader, self.source);
-        context.compile_shader(&shader);
+        ctx.shader_source(&shader, self.source);
+        ctx.compile_shader(&shader);
 
-        if context
+        if ctx
             .get_shader_parameter(&shader, WebGlRenderingContext::COMPILE_STATUS)
             .as_bool()
             .unwrap_or(false) {
             return Ok(shader);
         } else {
-            return Err(context
+            return Err(ctx
                 .get_shader_info_log(&shader)
                 .unwrap_or_else(|| String::from("Unknown error creating vertex shader")));
         }
@@ -40,11 +40,11 @@ impl VertexShader {
 }
 
 pub struct FragmentShader {
-    source: String,
+    source: &'static str,
 }
 
 impl FragmentShader {
-    pub fn init(source: String) -> FragmentShader {
+    pub fn init(source: &'static str) -> FragmentShader {
         return FragmentShader {
             source
         };
@@ -53,19 +53,19 @@ impl FragmentShader {
     pub fn compile(&self,
                    ctx: &WebGlRenderingContext
     ) -> Result<WebGlShader, String> {
-        let shader = ctx.
-                        create_shader(WebGlRenderingContext::FRAGMENT_SHADER).
+        let shader = ctx
+                        .create_shader(WebGlRenderingContext::FRAGMENT_SHADER)
                         .ok_or_else(|| String::from("Unable to create fragment shader object"))?;
-        context.shader_source(&shader, self.source);
-        context.compile_shader(&shader);
+        ctx.shader_source(&shader, self.source);
+        ctx.compile_shader(&shader);
 
-        if context
+        if ctx
             .get_shader_parameter(&shader, WebGlRenderingContext::COMPILE_STATUS)
             .as_bool()
             .unwrap_or(false) {
             return Ok(shader);
         } else {
-            return Err(context
+            return Err(ctx
                 .get_shader_info_log(&shader)
                 .unwrap_or_else(|| String::from("Unknown error creating fragment shader")));
         }
@@ -82,8 +82,8 @@ pub fn link(
         .create_program()
         .ok_or_else(|| String::from("Unable to create program object"))?;
 
-    context.attach_shader(&program, vert_shader.compile(context).unwrap());
-    context.attach_shader(&program, frag_shader.compile(context).unwrap());
+    context.attach_shader(&program, &vert_shader.compile(context).unwrap());
+    context.attach_shader(&program, &frag_shader.compile(context).unwrap());
     context.link_program(&program);
 
     if context
