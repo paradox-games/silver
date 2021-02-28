@@ -11,7 +11,7 @@ pub struct WebGLCanvas {
 }
 
 impl WebGLCanvas {
-    pub fn init(id: String) {
+    pub fn init(id: String) -> WebGLCanvas {
         let cv = web_sys::window().unwrap().document().unwrap().get_element_by_id(id).unwrap().dyn_into::<web_sys::HtmlCanvasElement>()?;
 
         return WebGLCanvas {
